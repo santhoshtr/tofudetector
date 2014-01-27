@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Tofu detection</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="lib/jquery.uls.data.js"></script>
+	<script src="lib/jquery.uls.data.utils.js"></script>
+	<script src="tofudetector.js"></script>
+	<style>
+		table, th, td {
+			border: 1px solid #ddd;
+			border-collapse:collapse;
+			padding: 5px;
+		}
+
+		td.lang,
+		td.index {
+			background-color: #ccc;
+		}
+		.tofu {
+			border: 2px solid red;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Tofu detection</h1>
+	<p>Sample strings used here is language autonyms. But the text to test can be anything.</p>
+	<div id="controls">
+		<table>
+			<tr></tr>
+		</table>
+		<script>
+			var index = 1;
+			$.each( $.uls.data.languages, function( langCode ) {
+				var autonym = $.uls.data.getAutonym( langCode ),
+					dir = $.uls.data.getDir( langCode );
+
+				$( 'table' ).append(
+					$( '<tr>' ).append(
+						$( '<td>' )
+							.addClass( 'index' )
+							.text( index++ ),
+						$( '<td>' )
+							.addClass( 'lang' )
+							.text( langCode ),
+						$( '<td>' )
+							.addClass( detectTofu( autonym ) ? 'tofu': '')
+							.attr( {
+								lang: langCode,
+								dir: dir
+							} )
+							.text( autonym )
+					)
+				);
+			} );
+		</script>
+	</div>
+</body>
