@@ -10,5 +10,5 @@ all: tofu.ttf tofu.ttf.base64
 		uuencode -m $^ < $^ | head -n -1 | tail -n +2 | tr -d '\n'; \
 	} > $@
 
-clean:
-	rm -f tofu.ttf tofu.ttf.base64
+#clean:
+#	rm -f tofu.ttf tofu.ttf.base64
