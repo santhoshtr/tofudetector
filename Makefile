@@ -1,5 +1,5 @@
 
-all: tofu.ttf.base64
+all: tofu.ttf tofu.ttf.base64
 
 %.ttf: %.ttx
 	ttx -o $@ $^
