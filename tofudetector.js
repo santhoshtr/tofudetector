@@ -10,18 +10,26 @@
 	 * @param {string} text
 	 * @return {boolean}
 	 */
-	function detectTofu( text ) {
+	function detectTofu( text, algorithm, runLength ) {
 		var index,
 			$fixture,
 			width = {},
 			height = {},
-			length = Math.min( 4, text.length ),
+			fontFamily,
+			length,
 			detected = false;
+
+		runLength = runLength? runLength: 4;
+		length = Math.min( runLength, text.length ),
+		fontFamily = 'sans-serif';
+		if (algorithm === 'tofu-font' ) {
+			fontFamily += ',tofu';
+		}
 
 		$fixture = $( '<span>' )
 			.css( {
 				fontSize: '72px',
-				fontFamily: 'sans-serif'
+				fontFamily: fontFamily
 			} )
 			.appendTo( 'body' );
 
