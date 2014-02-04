@@ -72,6 +72,13 @@
     <mtx name="glyph00001" width="20480" lsb="0"/>
   </hmtx>
 
+  <loca>
+  </loca>
+
+  <glyf> <!-- Will result in empty table -->
+    <TTGlyph name=".notdef"/>
+    <TTGlyph name="glyph00001"/>
+  </glyf>
 
   <cmap ERROR="">
     <!-- Hand-coded format13 table mapping all Unicode
