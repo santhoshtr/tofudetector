@@ -30,7 +30,7 @@
 
   <hhea>
     <tableVersion value="1.0"/>
-    <ascent value="0"/>
+    <ascent value="2048"/>
     <descent value="0"/>
     <lineGap value="0"/>
     <advanceWidthMax value="20480"/>
@@ -77,7 +77,14 @@
 
   <glyf> <!-- Will result in empty table -->
     <TTGlyph name=".notdef"/>
-    <TTGlyph name="glyph00001"/>
+    <TTGlyph name="glyph00001">
+      <contour>
+        <pt x="0" y="0" on="1"/>
+        <pt x="2048" y="0" on="1"/>
+        <pt x="1024" y="2048" on="1"/>
+      </contour>
+      <instructions><assembly></assembly></instructions>
+    </TTGlyph>
   </glyf>
 
   <cmap ERROR="">
@@ -85,7 +92,7 @@
          characters to glyph00001. -->
     <hexdata>
       0000 0001 <!-- version numTables -->
-        0000 0006 <!-- platformID encodingID -->
+        0003 000A <!-- platformID encodingID -->
         0000000C  <!-- offset -->
           000D 0000 <!-- format reserved -->
           0000001C  <!-- length -->
