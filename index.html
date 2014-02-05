@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8" />
 	<title>Tofu detection</title>
@@ -8,10 +9,27 @@
 	<script src="lib/jquery.uls.data.utils.js"></script>
 	<script src="tofudetector.js"></script>
 	<style>
-		table, th, td {
+		form, table, th, td {
 			border: 1px solid #ddd;
 			border-collapse:collapse;
 			padding: 5px;
+		}
+		body {
+			width: 50%;
+			margin-left: 25%;
+		}
+		.info {
+			color:  #555;
+		}
+		.status {
+			background-color: #ccc;
+			color: green;
+			padding: 5px;
+		}
+
+		.sample {
+			padding: 5px;
+			font-size: 1em;
 		}
 
 		td.lang,
@@ -21,40 +39,81 @@
 		.tofu {
 			border: 2px solid red;
 		}
+		@font-face
+		{
+			font-family: 'tofu';
+			src: url(data:application/x-font-ttf;base64,AAEAAAAFAEAAAgAQY21hcAAeADAAAADgAAAAKGhlYWT8nmUIAAAAXAAAADZoaGVhAAFQAwAAAJQAAAAkaG10eFgAAAAAAADYAAAACG1heHAAAwABAAAAuAAAACAAAQAAAAEAAP4dK8tfDzz1AAIIAAAAAADOd6oAAAAAAM8RdhIAAAAAAAAAAAAAAAEAAgAAAAAAAAABAAAAAAAAAABQAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgABAAAAAgAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAFAAAAAAAAABAAAABgAAAAwADQAAAAAAHAAAAAAAAAABAAAAAQAQ//4AAAAB) format('truetype');
+		}
 	</style>
 </head>
 
 <body>
 	<h1>Tofu detection</h1>
 	<p>Sample strings used here is language autonyms. But the text to test can be anything.</p>
+	<form>
+		<h3>Choose Algorithm</h3>
+		<input type="radio" name="algorithm" value="default" checked>Default algorithm -
+		<span class="info">Compare the dimensions of first
+			<input type=number value=4>characters, if the dont change, assume tofu.</span>
+		<br/>
+		<input type="radio" name="algorithm" value="tofu-font">Use tofu font -
+		<span class="info">A font that claims to support every character in Unicode and maps them all the the .notdef glyph, which happens to have a very large width (10em). Then set that font for the text to check as a fallback font. If no fonts are found on the system, you would get the tofu font, which is easy to detect given the unusual width.</span>
+	</form>
+	<input type="text" class="sample" placeholder="Enter text to test" />
+	<div class="status"></div>
 	<div id="controls">
 		<table>
 			<tr></tr>
 		</table>
 		<script>
-			var index = 1;
-			$.each( $.uls.data.languages, function( langCode ) {
-				var autonym = $.uls.data.getAutonym( langCode ),
-					dir = $.uls.data.getDir( langCode );
+			function runTofuDetection( algorithm, length ) {
+				var index = 1;
+				$( 'table' ).empty();
+				$( '.status' ).text( 'Running...' );
+				$.each( $.uls.data.languages, function( langCode ) {
+					var autonym = $.uls.data.getAutonym( langCode ),
+						dir = $.uls.data.getDir( langCode );
 
-				$( 'table' ).append(
-					$( '<tr>' ).append(
-						$( '<td>' )
-							.addClass( 'index' )
-							.text( index++ ),
-						$( '<td>' )
-							.addClass( 'lang' )
-							.text( langCode ),
-						$( '<td>' )
-							.addClass( detectTofu( autonym ) ? 'tofu': '')
-							.attr( {
-								lang: langCode,
-								dir: dir
-							} )
-							.text( autonym )
-					)
-				);
+					$( 'table' ).append(
+						$( '<tr>' ).append(
+							$( '<td>' )
+								.addClass( 'index' )
+								.text( index++ ),
+							$( '<td>' )
+								.addClass( 'lang' )
+								.text( langCode ),
+							$( '<td>' )
+								.addClass( detectTofu( autonym, algorithm, length ) ? 'tofu': '')
+								.attr( {
+									lang: langCode,
+									dir: dir
+								} )
+								.text( autonym )
+						)
+					);
+				} );
+				$( '.status' ).text( 'Tofu detected for '+ $( 'table .tofu').length + ' languages' );
+			}
+			$( 'input[type=radio]' ).click( function () {
+				if( $(this).is( ':checked') ) {
+					runTofuDetection( $(this).val(), $("input[type=number]").val() );
+				}
 			} );
+			$( 'input[type=number]' ).change( function () {
+				runTofuDetection( $( 'input[type=radio]' ).val(), $( this ).val() );
+			} );
+			$( '.sample' ).on( 'input', function() {
+				if ( $( this ).val() === '' ) {
+					$( this ).removeClass('tofu');
+					return;
+				}
+				detectTofu( $( this ).val(),
+					$( 'input[type=radio]' ).val(),
+					$( 'input[type=number]' ).val() )
+						? $( this ).addClass( 'tofu' )
+						: $( this ).removeClass('tofu');
+			} );
+			runTofuDetection( 'default' );
 		</script>
 	</div>
 </body>
